@@ -1,0 +1,5 @@
+QuickLookWindows/bin/
+QuickLookWindows/obj/
+dist/
+*.user
+.vs/
