@@ -11,7 +11,13 @@
         MouseDown="Window_MouseDown"
         Loaded="Window_Loaded">
 
-    <Grid Background="#CC000000">
+    <Grid>
+        <Grid.Background>
+            <RadialGradientBrush GradientOrigin="0.5,0.4" Center="0.5,0.4" RadiusX="0.7" RadiusY="0.7">
+                <GradientStop Color="#D4000010" Offset="0"/>
+                <GradientStop Color="#E8000000" Offset="1"/>
+            </RadialGradientBrush>
+        </Grid.Background>
 
         <!-- Preview card -->
         <Border x:Name="CardBorder"
@@ -20,11 +26,51 @@
                 VerticalAlignment="Center"
                 Background="#1C1C1E"
                 CornerRadius="14"
-                BorderBrush="#3A3A3C"
-                BorderThickness="1">
+                BorderThickness="1.5"
+                RenderTransformOrigin="0.5,0.5"
+                Opacity="0">
+            <Border.RenderTransform>
+                <ScaleTransform/>
+            </Border.RenderTransform>
+            <Border.BorderBrush>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#5558C8" Offset="0"/>
+                    <GradientStop Color="#2A2A3C" Offset="0.45"/>
+                    <GradientStop Color="#2A2A3C" Offset="0.55"/>
+                    <GradientStop Color="#6B30A8" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
             <Border.Effect>
-                <DropShadowEffect Color="Black" BlurRadius="60" Opacity="0.8" ShadowDepth="0"/>
+                <DropShadowEffect Color="#2020A0" BlurRadius="80" Opacity="0.55" ShadowDepth="0"/>
             </Border.Effect>
+            <Border.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetName="CardBorder"
+                                Storyboard.TargetProperty="Opacity"
+                                From="0" To="1" Duration="0:0:0.22"/>
+                            <DoubleAnimation
+                                Storyboard.TargetName="CardBorder"
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                From="0.94" To="1" Duration="0:0:0.35">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation
+                                Storyboard.TargetName="CardBorder"
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                From="0.94" To="1" Duration="0:0:0.35">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Border.Triggers>
 
             <Grid>
                 <Grid.RowDefinitions>
@@ -35,10 +81,16 @@
 
                 <!-- Title bar -->
                 <Border Grid.Row="0"
-                        Background="#2C2C2E"
                         CornerRadius="14,14,0,0"
                         BorderBrush="#3A3A3C"
                         BorderThickness="0,0,0,1">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#2C2C38" Offset="0"/>
+                            <GradientStop Color="#242432" Offset="0.5"/>
+                            <GradientStop Color="#2C2C38" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
                     <Grid Margin="16,0">
 
                         <!-- Mac traffic lights -->

@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quick Look for Windows — Anlık Dosya Önizleme</title>
+    <title>QuickLook for Windows — Anlık Dosya Önizleme</title>
     <meta name="description" content="Mac'in efsanevi Quick Look özelliği artık Windows'ta. Space tuşuna basarak dosyaları anında önizleyin.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<canvas id="particles"></canvas>
+<!-- Background orbs -->
+<div class="orb orb-1" aria-hidden="true"></div>
+<div class="orb orb-2" aria-hidden="true"></div>
+<div class="orb orb-3" aria-hidden="true"></div>
 
 <!-- NAV -->
 <nav class="nav" id="nav">
@@ -63,7 +66,7 @@
         </div>
 
         <div class="hero-stats reveal">
-            <div class="stat"><span class="stat-val">0ms</span><span class="stat-label">Açılış Gecikmesi</span></div>
+            <div class="stat"><span class="stat-val">~0ms</span><span class="stat-label">Açılış Gecikmesi</span></div>
             <div class="stat-div"></div>
             <div class="stat"><span class="stat-val">20+</span><span class="stat-label">Dosya Formatı</span></div>
             <div class="stat-div"></div>
@@ -71,30 +74,73 @@
         </div>
     </div>
 
-    <!-- Mockup -->
+    <!-- Realistic App Mockup -->
     <div class="mockup-scene reveal">
         <div class="mockup-glow"></div>
-        <div class="mockup-win">
-            <div class="mockup-bar">
-                <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-                <span class="mockup-title-text">design_v3_FINAL.png</span>
-            </div>
-            <div class="mockup-body">
-                <div class="mock-img">
-                    <div class="mock-shape circle"></div>
-                    <div class="mock-shape rect"></div>
-                    <div class="mock-shape line l1"></div>
-                    <div class="mock-shape line l2"></div>
-                    <div class="mock-shape line l3 short"></div>
+        <div class="app-win" id="app-win">
+            <!-- Title bar -->
+            <div class="aw-bar">
+                <div class="aw-dots">
+                    <span class="aw-dot r"></span>
+                    <span class="aw-dot y"></span>
+                    <span class="aw-dot g"></span>
+                </div>
+                <span class="aw-title">Fotoğraflar</span>
+                <div class="aw-nav">
+                    <button class="aw-nav-btn">‹</button>
+                    <button class="aw-nav-btn">›</button>
                 </div>
             </div>
-            <div class="mockup-foot">
-                <span class="mf-tag">PNG</span>
-                <span class="mf-sep">·</span>
-                <span>3840 × 2160</span>
-                <span class="mf-sep">·</span>
-                <span>4.2 MB</span>
-                <span class="mf-hint">ESC / SPACE — kapat</span>
+
+            <!-- Folder content -->
+            <div class="aw-content">
+                <div class="aw-fhdr">
+                    <span class="aw-ficon">📁</span>
+                    <div>
+                        <div class="aw-fname">Fotoğraflar</div>
+                        <div class="aw-fcount">12 öğe</div>
+                    </div>
+                </div>
+
+                <div class="aw-row">
+                    <div class="aw-thumb" style="background:linear-gradient(135deg,#FF6B6B,#FF8E53)"></div>
+                    <div class="aw-rinfo">
+                        <div class="aw-rname">sunset_2024.jpg</div>
+                        <div class="aw-rmeta">Görüntü · 3.2 MB</div>
+                    </div>
+                </div>
+                <div class="aw-row">
+                    <div class="aw-thumb" style="background:linear-gradient(135deg,#4FACFE,#00F2FE)"></div>
+                    <div class="aw-rinfo">
+                        <div class="aw-rname">sky_blue.png</div>
+                        <div class="aw-rmeta">Görüntü · 5.1 MB</div>
+                    </div>
+                </div>
+                <div class="aw-row">
+                    <div class="aw-thumb aw-thumb-code">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div class="aw-rinfo">
+                        <div class="aw-rname">index.js</div>
+                        <div class="aw-rmeta">JS · 42 KB</div>
+                    </div>
+                </div>
+                <div class="aw-row">
+                    <div class="aw-thumb" style="background:linear-gradient(135deg,#667EEA,#764BA2)"></div>
+                    <div class="aw-rinfo">
+                        <div class="aw-rname">portrait.jpg</div>
+                        <div class="aw-rmeta">Görüntü · 8.7 MB</div>
+                    </div>
+                </div>
+                <div class="aw-row aw-row-more">↓ &nbsp;8 öğe daha</div>
+            </div>
+
+            <!-- Info bar -->
+            <div class="aw-foot">
+                <span class="aw-ftype">Klasör · 12 öğe</span>
+                <span class="aw-sep">·</span>
+                <span class="aw-fopen">Aç ↗</span>
+                <span class="aw-fhint">ESC · ← → gezin</span>
             </div>
         </div>
     </div>
@@ -109,34 +155,46 @@
 
         <div class="feat-grid">
             <div class="feat-card reveal">
-                <div class="feat-icon">⚡</div>
+                <div class="feat-top">
+                    <div class="feat-icon">⚡</div>
+                </div>
                 <h3>Anlık Açılış</h3>
-                <p>Herhangi bir gecikme yok. Space'e basın, önizleme anında açılır.</p>
+                <p>Herhangi bir gecikme yok. Space'e basın, önizleme anında açılır. Sıfır bekleme, tam verimlilik.</p>
             </div>
             <div class="feat-card reveal">
-                <div class="feat-icon">🎯</div>
+                <div class="feat-top">
+                    <div class="feat-icon">🎯</div>
+                </div>
                 <h3>Akıllı Algılama</h3>
-                <p>Yalnızca File Explorer'dayken devreye girer. Diğer uygulamalarda Space tuşunu engellemez.</p>
+                <p>Yalnızca File Explorer'dayken devreye girer. Diğer uygulamalarda Space tuşunu asla engellemez.</p>
             </div>
             <div class="feat-card reveal">
-                <div class="feat-icon">🖥️</div>
+                <div class="feat-top">
+                    <div class="feat-icon">🖥️</div>
+                </div>
                 <h3>Mac Tasarımı</h3>
-                <p>Mac'in ikonik önizleme penceresi Windows'a birebir taşındı. Tanıdık, temiz arayüz.</p>
+                <p>Mac'in ikonik trafik ışığı düğmeleri — kapat, aç, genişlet. Tamamen işlevsel, tanıdık arayüz.</p>
             </div>
             <div class="feat-card reveal">
-                <div class="feat-icon">🔇</div>
+                <div class="feat-top">
+                    <div class="feat-icon">📂</div>
+                </div>
+                <h3>Klasör Önizleme</h3>
+                <p>Klasörlerin içini görün. Resimler için küçük resim, kod dosyaları için içerik önizlemesi.</p>
+            </div>
+            <div class="feat-card reveal">
+                <div class="feat-top">
+                    <div class="feat-icon">🔇</div>
+                </div>
                 <h3>Arka Planda</h3>
                 <p>Sistem tepsisinde sessizce çalışır. RAM kullanımı son derece düşük, görev çubuğunu kirletmez.</p>
             </div>
             <div class="feat-card reveal">
-                <div class="feat-icon">📦</div>
-                <h3>Kurulum Sihirbazı</h3>
-                <p>İstediğiniz klasöre kurun. Masaüstü kısayolu, başlangıç seçeneği — hepsi kurulumda.</p>
-            </div>
-            <div class="feat-card reveal">
-                <div class="feat-icon">🆓</div>
+                <div class="feat-top">
+                    <div class="feat-icon">🆓</div>
+                </div>
                 <h3>Tamamen Ücretsiz</h3>
-                <p>Açık kaynak, reklamsız, kayıtsız. GitHub'da kaynak kodunu inceleyebilirsiniz.</p>
+                <p>Açık kaynak, reklamsız, kayıtsız. Kaynak kodu GitHub'da herkesin incelemesine açık.</p>
             </div>
         </div>
     </div>
@@ -154,7 +212,7 @@
                 <div class="step-body">
                     <div class="step-ico">⬇️</div>
                     <h3>İndir & Kur</h3>
-                    <p>QuickLookSetup.exe dosyasını indirin. Sihirbaz size kurulum klasörünü, masaüstü kısayolunu ve başlangıç seçeneğini sorar.</p>
+                    <p>QuickLookSetup.exe dosyasını indirin. Sihirbaz kurulum klasörünü, masaüstü kısayolunu ve başlangıç seçeneğini sorar.</p>
                 </div>
             </div>
             <div class="step-connector reveal"><span></span></div>
@@ -172,7 +230,7 @@
                 <div class="step-body">
                     <div class="step-ico">⌨️</div>
                     <h3>Space'e Bas</h3>
-                    <p>Klavyenizdeki <kbd>SPACE</kbd> tuşuna basın. Önizleme penceresi açılır. <kbd>ESC</kbd> veya tekrar <kbd>SPACE</kbd> ile kapatın.</p>
+                    <p>Klavyenizdeki <kbd>SPACE</kbd> tuşuna basın. Önizleme açılır. <kbd>ESC</kbd> veya <kbd>SPACE</kbd> ile kapatın.</p>
                 </div>
             </div>
         </div>
@@ -243,7 +301,6 @@
 <!-- DOWNLOAD CTA -->
 <section class="dl-cta" id="download">
     <div class="container">
-        <div class="cta-glow"></div>
         <h2 class="reveal">Hemen deneyin</h2>
         <p class="reveal">Ücretsiz. Açık kaynak. Kayıt gerekmez.</p>
         <a href="https://github.com/serdalswd/QuickLookWindows/releases/latest/download/QuickLookSetup.exe"
@@ -256,6 +313,12 @@
             QuickLookSetup.exe İndir
             <span class="btn-sub">Son sürüm · v1.4.0</span>
         </a>
+        <div class="tagline reveal">
+            <span>Ücretsiz</span>
+            <span>Açık Kaynak</span>
+            <span>MIT Lisansı</span>
+            <span>Kayıt Gerektirmez</span>
+        </div>
     </div>
 </section>
 

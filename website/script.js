@@ -1,46 +1,3 @@
-// ─── PARTICLES ───────────────────────────────────────────────────────────────
-(function () {
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    let W, H, pts = [];
-
-    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-    resize();
-    window.addEventListener('resize', resize);
-
-    for (let i = 0; i < 80; i++)
-        pts.push({ x: Math.random() * 1920, y: Math.random() * 1080, vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3, r: Math.random() * 1.5 + .5, a: Math.random() });
-
-    function draw() {
-        ctx.clearRect(0, 0, W, H);
-        pts.forEach(p => {
-            p.x += p.vx; p.y += p.vy;
-            if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-            if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(108,99,255,${p.a * .6})`;
-            ctx.fill();
-        });
-        for (let i = 0; i < pts.length; i++) {
-            for (let j = i + 1; j < pts.length; j++) {
-                const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-                const d = Math.sqrt(dx * dx + dy * dy);
-                if (d < 140) {
-                    ctx.beginPath();
-                    ctx.moveTo(pts[i].x, pts[i].y);
-                    ctx.lineTo(pts[j].x, pts[j].y);
-                    ctx.strokeStyle = `rgba(108,99,255,${(1 - d / 140) * .12})`;
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }
-            }
-        }
-        requestAnimationFrame(draw);
-    }
-    draw();
-})();
-
 // ─── TYPED ANIMATION ─────────────────────────────────────────────────────────
 (function () {
     const words = ['Anında', 'Hızlıca', 'Kolayca', 'Anında'];
@@ -50,11 +7,11 @@
     function tick() {
         const word = words[wi];
         el.textContent = deleting ? word.slice(0, ci--) : word.slice(0, ci++);
-        if (!deleting && ci > word.length) { deleting = true; setTimeout(tick, 1400); return; }
-        if (deleting && ci < 0) { deleting = false; wi = (wi + 1) % words.length; ci = 0; setTimeout(tick, 400); return; }
-        setTimeout(tick, deleting ? 60 : 90);
+        if (!deleting && ci > word.length) { deleting = true; setTimeout(tick, 1500); return; }
+        if (deleting && ci < 0) { deleting = false; wi = (wi + 1) % words.length; ci = 0; setTimeout(tick, 420); return; }
+        setTimeout(tick, deleting ? 55 : 88);
     }
-    setTimeout(tick, 800);
+    setTimeout(tick, 900);
 })();
 
 // ─── NAV SCROLL ──────────────────────────────────────────────────────────────
@@ -65,31 +22,70 @@ window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.
 const revealObs = new IntersectionObserver(entries => {
     entries.forEach((e, i) => {
         if (e.isIntersecting) {
-            setTimeout(() => e.target.classList.add('in'), i * 60);
+            setTimeout(() => e.target.classList.add('in'), i * 70);
             revealObs.unobserve(e.target);
         }
     });
-}, { threshold: 0.1 });
+}, { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-// ─── MOCKUP MOUSE PARALLAX ───────────────────────────────────────────────────
-const mockup = document.querySelector('.mockup-win');
-if (mockup) {
+// ─── FEATURE CARD: CURSOR GLOW + 3D TILT ────────────────────────────────────
+document.querySelectorAll('.feat-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        const cx = r.width / 2, cy = r.height / 2;
+        const rx = ((y - cy) / cy) * -7;
+        const ry = ((x - cx) / cx) * 7;
+        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px) scale(1.01)`;
+        card.style.setProperty('--mx', `${(x / r.width) * 100}%`);
+        card.style.setProperty('--my', `${(y / r.height) * 100}%`);
+    });
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.style.removeProperty('--mx');
+        card.style.removeProperty('--my');
+    });
+});
+
+// ─── APP MOCKUP PARALLAX ─────────────────────────────────────────────────────
+const appWin = document.getElementById('app-win');
+if (appWin) {
+    let tX = 0, tY = 0, cX = 0, cY = 0;
     document.addEventListener('mousemove', e => {
         const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-        const rx = ((e.clientY - cy) / cy) * 4;
-        const ry = ((e.clientX - cx) / cx) * -4;
-        mockup.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+        tX = ((e.clientY - cy) / cy) * 4.5;
+        tY = ((e.clientX - cx) / cx) * -4.5;
     });
-    document.addEventListener('mouseleave', () => mockup.style.transform = '');
+    // Smooth interpolation via rAF
+    function animMockup() {
+        cX += (tX - cX) * 0.06;
+        cY += (tY - cY) * 0.06;
+        appWin.style.transform = `perspective(1400px) rotateX(${cX}deg) rotateY(${cY}deg)`;
+        requestAnimationFrame(animMockup);
+    }
+    animMockup();
+    document.addEventListener('mouseleave', () => { tX = 0; tY = 0; });
 }
+
+// ─── FORMAT TAG HOVER RIPPLE ─────────────────────────────────────────────────
+document.querySelectorAll('.fmt-tags span').forEach((tag, i) => {
+    tag.style.transitionDelay = `${i * 18}ms`;
+});
 
 // ─── DOWNLOAD BUTTON FEEDBACK ────────────────────────────────────────────────
 document.querySelectorAll('.btn-download').forEach(btn => {
     btn.addEventListener('click', function () {
         const orig = this.innerHTML;
         this.innerHTML = `<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> İndirme Başladı!<span class="btn-sub">İyi kullanımlar 🎉</span>`;
-        setTimeout(() => this.innerHTML = orig, 3000);
+        this.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)';
+        this.style.boxShadow = '0 0 0 1px rgba(34,197,94,.4),0 8px 48px rgba(34,197,94,.4)';
+        setTimeout(() => {
+            this.innerHTML = orig;
+            this.style.background = '';
+            this.style.boxShadow = '';
+        }, 3500);
     });
 });
 
@@ -99,19 +95,30 @@ const statObs = new IntersectionObserver(entries => {
         if (!e.isIntersecting) return;
         e.target.querySelectorAll('.stat-val').forEach(el => {
             const raw = el.textContent.trim();
-            const num = parseFloat(raw);
-            if (isNaN(num)) return;
-            const suffix = raw.replace(/[\d.]/g, '');
+            const num = parseFloat(raw.replace(/[^\d.]/g, ''));
+            if (isNaN(num) || num === 0) return;
+            const prefix = raw.match(/^[^\d]*/)?.[0] ?? '';
+            const suffix = raw.replace(/^[^\d]*/, '').replace(/[\d.]+/, '');
             let cur = 0;
-            const inc = num / 40;
-            const t = setInterval(() => {
+            const inc = num / 38;
+            const timer = setInterval(() => {
                 cur += inc;
-                if (cur >= num) { cur = num; clearInterval(t); }
-                el.textContent = Math.floor(cur) + suffix;
-            }, 28);
+                if (cur >= num) { cur = num; clearInterval(timer); }
+                el.textContent = prefix + Math.floor(cur) + suffix;
+            }, 25);
         });
         statObs.unobserve(e.target);
     });
-}, { threshold: .5 });
+}, { threshold: 0.5 });
 const statsEl = document.querySelector('.hero-stats');
 if (statsEl) statObs.observe(statsEl);
+
+// ─── SMOOTH SCROLL FOR NAV LINKS ─────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
