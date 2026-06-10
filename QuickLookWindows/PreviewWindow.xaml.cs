@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,14 +31,32 @@ public partial class PreviewWindow : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        TitleText.Text = Path.GetFileName(_filePath);
-        var info = new FileInfo(_filePath);
-        FileSizeLabel.Text = FormatSize(info.Length);
+        var name = Path.GetFileName(_filePath);
+        TitleText.Text = string.IsNullOrEmpty(name) ? _filePath : name;
+
+        if (Directory.Exists(_filePath))
+        {
+            FileTypeLabel.Text = "Klasör";
+            FileSizeLabel.Text = "";
+            SeparatorDot.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            var info = new FileInfo(_filePath);
+            FileSizeLabel.Text = FormatSize(info.Length);
+        }
         LoadPreview();
     }
 
     private void LoadPreview()
     {
+        // Klasör kontrolü
+        if (Directory.Exists(_filePath))
+        {
+            ShowFolder();
+            return;
+        }
+
         var ext = Path.GetExtension(_filePath).ToLowerInvariant();
         switch (GetCategory(ext))
         {
@@ -47,6 +66,75 @@ public partial class PreviewWindow : Window
             case FileCategory.Audio:  ShowAudio(ext); break;
             default:                  ShowUnsupported(ext); break;
         }
+    }
+
+    private void ShowFolder()
+    {
+        FileTypeLabel.Text = "Klasör";
+        LoadingText.Visibility = Visibility.Collapsed;
+
+        string[] entries;
+        try { entries = Directory.GetFileSystemEntries(_filePath); }
+        catch { entries = []; }
+
+        var panel = new StackPanel
+        {
+            VerticalAlignment = WpfVAlign.Center,
+            HorizontalAlignment = WpfHAlign.Center,
+            Margin = new Thickness(32)
+        };
+        panel.Children.Add(new TextBlock
+        {
+            Text = "📁",
+            FontSize = 72,
+            HorizontalAlignment = WpfHAlign.Center,
+            Margin = new Thickness(0, 0, 0, 16)
+        });
+        panel.Children.Add(new TextBlock
+        {
+            Text = Path.GetFileName(_filePath),
+            Foreground = new SolidColorBrush(WpfColor.FromRgb(0xEB, 0xEB, 0xF5)),
+            FontSize = 18,
+            FontWeight = FontWeights.SemiBold,
+            HorizontalAlignment = WpfHAlign.Center,
+            TextTrimming = TextTrimming.CharacterEllipsis,
+            MaxWidth = 500,
+            Margin = new Thickness(0, 0, 0, 8)
+        });
+        panel.Children.Add(new TextBlock
+        {
+            Text = $"{entries.Length} öğe",
+            Foreground = new SolidColorBrush(WpfColor.FromRgb(0x8E, 0x8E, 0x93)),
+            FontSize = 14,
+            HorizontalAlignment = WpfHAlign.Center,
+            Margin = new Thickness(0, 0, 0, 20)
+        });
+
+        // İlk 6 öğeyi listele
+        var listPanel = new StackPanel { HorizontalAlignment = WpfHAlign.Center };
+        foreach (var entry in entries.Take(6))
+        {
+            var isDir = Directory.Exists(entry);
+            listPanel.Children.Add(new TextBlock
+            {
+                Text = $"{(isDir ? "📁" : "📄")} {Path.GetFileName(entry)}",
+                Foreground = new SolidColorBrush(WpfColor.FromRgb(0x6E, 0x6E, 0x8A)),
+                FontSize = 13,
+                Margin = new Thickness(0, 2, 0, 2)
+            });
+        }
+        if (entries.Length > 6)
+            listPanel.Children.Add(new TextBlock
+            {
+                Text = $"... ve {entries.Length - 6} öğe daha",
+                Foreground = new SolidColorBrush(WpfColor.FromRgb(0x4E, 0x4E, 0x6A)),
+                FontSize = 12,
+                Margin = new Thickness(0, 6, 0, 0)
+            });
+
+        panel.Children.Add(listPanel);
+        ContentGrid.Children.Clear();
+        ContentGrid.Children.Add(panel);
     }
 
     private void ShowImage()

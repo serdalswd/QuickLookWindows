@@ -1,0 +1,71 @@
+<Window x:Class="QuickLookWindows.ToastWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        Width="320" Height="90"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded">
+
+    <Border x:Name="Card"
+            Background="#1A1A24"
+            BorderBrush="#3A3A52"
+            BorderThickness="1"
+            CornerRadius="12"
+            Opacity="0">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="24" Opacity="0.6" ShadowDepth="0"/>
+        </Border.Effect>
+        <Border.RenderTransform>
+            <TranslateTransform x:Name="SlideTransform" Y="20"/>
+        </Border.RenderTransform>
+
+        <Grid Margin="16,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Icon -->
+            <Border Grid.Column="0" Width="36" Height="36"
+                    Background="linear-gradient(135deg,#6C63FF,#9B8AFB)"
+                    CornerRadius="9" Margin="0,0,12,0"
+                    VerticalAlignment="Center">
+                <Border Background="#6C63FF" CornerRadius="9">
+                    <TextBlock Text="Q" FontSize="18" FontWeight="Black"
+                               Foreground="White" HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+            </Border>
+
+            <!-- Text -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Text="QuickLook çalışıyor"
+                           Foreground="#F4F4FF" FontSize="13" FontWeight="SemiBold"
+                           Margin="0,0,0,2"/>
+                <TextBlock Text="File Explorer'da dosya seç → SPACE"
+                           Foreground="#6666AA" FontSize="11"
+                           FontFamily="Cascadia Code, Consolas"/>
+            </StackPanel>
+
+            <!-- Close -->
+            <Button Grid.Column="2" Content="✕"
+                    Background="Transparent" BorderThickness="0"
+                    Foreground="#44445A" FontSize="12"
+                    Cursor="Hand" VerticalAlignment="Top"
+                    Click="CloseBtn_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent" Padding="4">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+    </Border>
+</Window>

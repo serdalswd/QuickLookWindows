@@ -18,6 +18,7 @@ public partial class App : Application
         base.OnStartup(e);
         SetupTrayIcon();
         SetupKeyboardHook();
+        new ToastWindow().Show();
     }
 
     private void SetupTrayIcon()
@@ -57,7 +58,9 @@ public partial class App : Application
         }
 
         string? filePath = FileExplorerHelper.GetSelectedFile(explorerHwnd);
-        if (filePath == null || !File.Exists(filePath)) return;
+        if (filePath == null) return;
+        // Hem dosya hem klasör desteklenir
+        if (!File.Exists(filePath) && !Directory.Exists(filePath)) return;
 
         _previewWindow = new PreviewWindow(filePath);
         _previewWindow.Closed += (_, _) => _previewWindow = null;
