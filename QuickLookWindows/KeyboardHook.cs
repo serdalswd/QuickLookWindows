@@ -13,7 +13,7 @@ public class KeyboardHook : IDisposable
     private IntPtr _hookId = IntPtr.Zero;
     private readonly LowLevelKeyboardProc _proc;
 
-    public event Action? SpaceInExplorer;
+    public event Action<IntPtr>? SpaceInExplorer;
 
     public KeyboardHook()
     {
@@ -25,7 +25,7 @@ public class KeyboardHook : IDisposable
     {
         using var process = Process.GetCurrentProcess();
         using var module = process.MainModule!;
-        return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(module.ModuleName), 0);
+        return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(module.ModuleName!), 0);
     }
 
     private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
@@ -33,10 +33,14 @@ public class KeyboardHook : IDisposable
         if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
         {
             int vkCode = Marshal.ReadInt32(lParam);
-            if (vkCode == VK_SPACE && FileExplorerHelper.IsFileExplorerForeground())
+            if (vkCode == VK_SPACE)
             {
-                SpaceInExplorer?.Invoke();
-                return (IntPtr)1;
+                IntPtr hwnd = GetForegroundWindow();
+                if (FileExplorerHelper.IsFileExplorerWindow(hwnd))
+                {
+                    SpaceInExplorer?.Invoke(hwnd); // HWND'yi hemen yakala, sonra ilet
+                    return (IntPtr)1;
+                }
             }
         }
         return CallNextHookEx(_hookId, nCode, wParam, lParam);
@@ -52,6 +56,9 @@ public class KeyboardHook : IDisposable
     }
 
     private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetForegroundWindow();
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);

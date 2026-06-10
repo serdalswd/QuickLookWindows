@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>QuickLookSetup</AssemblyName>
+    <RootNamespace>QuickLookSetup</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\dist\QuickLookWindows.exe">
+      <LogicalName>QuickLookWindows.exe</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

@@ -7,43 +7,41 @@ namespace QuickLookWindows;
 public static class FileExplorerHelper
 {
     [DllImport("user32.dll")]
-    private static extern IntPtr GetForegroundWindow();
+    public static extern IntPtr GetForegroundWindow();
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
-    public static bool IsFileExplorerForeground()
+    public static bool IsFileExplorerWindow(IntPtr hwnd)
     {
-        var hwnd = GetForegroundWindow();
-        var className = new StringBuilder(256);
-        GetClassName(hwnd, className, 256);
-        return className.ToString() == "CabinetWClass";
+        var sb = new StringBuilder(256);
+        GetClassName(hwnd, sb, 256);
+        var cls = sb.ToString();
+        return cls == "CabinetWClass" || cls == "ExploreWClass";
     }
 
-    public static string? GetSelectedFile()
+    // explorerHwnd: hook callback'te yakalanan HWND (değişmeden geçirilir)
+    public static string? GetSelectedFile(IntPtr explorerHwnd)
     {
         try
         {
-            var foregroundHwnd = GetForegroundWindow();
-
             var shellAppType = Type.GetTypeFromProgID("Shell.Application");
             if (shellAppType == null) return null;
 
             dynamic shell = Activator.CreateInstance(shellAppType)!;
             dynamic windows = shell.Windows();
+            long targetHwnd = explorerHwnd.ToInt64();
 
             for (int i = 0; i < windows.Count; i++)
             {
                 try
                 {
                     dynamic window = windows.Item(i);
-                    int hwnd = (int)window.HWND;
-
-                    if ((IntPtr)hwnd == foregroundHwnd)
+                    long windowHwnd = Convert.ToInt64(window.HWND); // 64-bit safe
+                    if (windowHwnd == targetHwnd)
                     {
                         dynamic document = window.Document;
                         dynamic selectedItems = document.SelectedItems();
-
                         if (selectedItems.Count > 0)
                         {
                             dynamic item = selectedItems.Item(0);
@@ -55,7 +53,6 @@ public static class FileExplorerHelper
             }
         }
         catch { }
-
         return null;
     }
 }

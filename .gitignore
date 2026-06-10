@@ -1,5 +1,8 @@
 QuickLookWindows/bin/
 QuickLookWindows/obj/
+QuickLookSetup/bin/
+QuickLookSetup/obj/
 dist/
 *.user
 .vs/
+.claude/

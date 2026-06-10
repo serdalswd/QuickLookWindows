@@ -43,27 +43,25 @@ public partial class App : Application
     private void SetupKeyboardHook()
     {
         _hook = new KeyboardHook();
-        _hook.SpaceInExplorer += OnSpaceInExplorer;
+        // BeginInvoke: hook callback'ten UI thread'e güvenli geçiş
+        _hook.SpaceInExplorer += hwnd => Dispatcher.BeginInvoke(() => OnSpaceInExplorer(hwnd));
     }
 
-    private void OnSpaceInExplorer()
+    private void OnSpaceInExplorer(IntPtr explorerHwnd)
     {
-        Dispatcher.Invoke(() =>
+        if (_previewWindow != null)
         {
-            if (_previewWindow != null)
-            {
-                _previewWindow.Close();
-                _previewWindow = null;
-                return;
-            }
+            _previewWindow.Close();
+            _previewWindow = null;
+            return;
+        }
 
-            string? filePath = FileExplorerHelper.GetSelectedFile();
-            if (filePath == null || !File.Exists(filePath)) return;
+        string? filePath = FileExplorerHelper.GetSelectedFile(explorerHwnd);
+        if (filePath == null || !File.Exists(filePath)) return;
 
-            _previewWindow = new PreviewWindow(filePath);
-            _previewWindow.Closed += (_, _) => _previewWindow = null;
-            _previewWindow.Show();
-        });
+        _previewWindow = new PreviewWindow(filePath);
+        _previewWindow.Closed += (_, _) => _previewWindow = null;
+        _previewWindow.Show();
     }
 
     private void ShowAbout()
