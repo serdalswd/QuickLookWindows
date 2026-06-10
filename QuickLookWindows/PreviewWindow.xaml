@@ -40,11 +40,61 @@
                         BorderBrush="#3A3A3C"
                         BorderThickness="0,0,0,1">
                     <Grid Margin="16,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Ellipse Width="12" Height="12" Fill="#FF5F57" Margin="0,0,8,0"/>
-                            <Ellipse Width="12" Height="12" Fill="#FEBC2E" Margin="0,0,8,0"/>
-                            <Ellipse Width="12" Height="12" Fill="#28C840"/>
+
+                        <!-- Mac traffic lights -->
+                        <StackPanel x:Name="TrafficLights"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    MouseEnter="TrafficLights_MouseEnter"
+                                    MouseLeave="TrafficLights_MouseLeave">
+
+                            <!-- Red: Close -->
+                            <Grid Width="12" Height="12" Margin="0,0,8,0">
+                                <Ellipse Fill="#FF5F57"/>
+                                <TextBlock x:Name="CloseSymbol" Text="✕"
+                                           FontSize="7.5" FontWeight="Bold"
+                                           Foreground="#730000"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsHitTestVisible="False"
+                                           Opacity="0" Margin="0,0.5,0,0"/>
+                                <Button Background="Transparent" BorderThickness="0"
+                                        Cursor="Hand" ToolTip="Kapat"
+                                        Click="BtnClose_Click" Focusable="False"/>
+                            </Grid>
+
+                            <!-- Yellow: Open with default app -->
+                            <Grid Width="12" Height="12" Margin="0,0,8,0">
+                                <Ellipse Fill="#FEBC2E"/>
+                                <TextBlock x:Name="OpenSymbol" Text="↗"
+                                           FontSize="7" FontWeight="Bold"
+                                           Foreground="#6B4000"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsHitTestVisible="False"
+                                           Opacity="0"/>
+                                <Button Background="Transparent" BorderThickness="0"
+                                        Cursor="Hand" ToolTip="Uygulamada Aç"
+                                        Click="BtnOpenFile_Click" Focusable="False"/>
+                            </Grid>
+
+                            <!-- Green: Expand/contract card -->
+                            <Grid Width="12" Height="12">
+                                <Ellipse Fill="#28C840"/>
+                                <TextBlock x:Name="ExpandSymbol" Text="⤢"
+                                           FontSize="8" FontWeight="Bold"
+                                           Foreground="#004D00"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsHitTestVisible="False"
+                                           Opacity="0"/>
+                                <Button Background="Transparent" BorderThickness="0"
+                                        Cursor="Hand" ToolTip="Büyüt / Küçült"
+                                        Click="BtnExpand_Click" Focusable="False"/>
+                            </Grid>
                         </StackPanel>
+
+                        <!-- File name -->
                         <TextBlock x:Name="TitleText"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -52,7 +102,29 @@
                                    FontSize="13"
                                    FontWeight="Medium"
                                    TextTrimming="CharacterEllipsis"
-                                   MaxWidth="700"/>
+                                   MaxWidth="620"/>
+
+                        <!-- Sibling navigation arrows -->
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                            <Button x:Name="BtnPrev"
+                                    Content="‹"
+                                    Background="Transparent" Foreground="#8E8E93"
+                                    BorderThickness="0" FontSize="20" FontWeight="Bold"
+                                    Width="28" Height="28" Cursor="Hand"
+                                    ToolTip="Önceki dosya (←)"
+                                    Click="BtnPrev_Click" Focusable="False"
+                                    Visibility="Collapsed"/>
+                            <Button x:Name="BtnNext"
+                                    Content="›"
+                                    Background="Transparent" Foreground="#8E8E93"
+                                    BorderThickness="0" FontSize="20" FontWeight="Bold"
+                                    Width="28" Height="28" Cursor="Hand"
+                                    ToolTip="Sonraki dosya (→)"
+                                    Click="BtnNext_Click" Focusable="False"
+                                    Visibility="Collapsed"/>
+                        </StackPanel>
                     </Grid>
                 </Border>
 
@@ -75,11 +147,27 @@
                         BorderBrush="#3A3A3C"
                         BorderThickness="0,1,0,0">
                     <DockPanel Margin="16,0" VerticalAlignment="Center">
-                        <TextBlock Text="ESC / SPACE — kapat"
+                        <!-- Right side (declared first for DockPanel ordering) -->
+                        <TextBlock x:Name="HintText"
+                                   Text="ESC · SPACE kapat  ·  ← → gezin"
                                    DockPanel.Dock="Right"
                                    Foreground="#48484A"
                                    FontSize="11"
                                    VerticalAlignment="Center"/>
+                        <Button x:Name="BtnOpenInBar"
+                                Content="Aç ↗"
+                                DockPanel.Dock="Right"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="#6366F1"
+                                FontSize="11"
+                                Cursor="Hand"
+                                Margin="0,0,20,0"
+                                Padding="0"
+                                Click="BtnOpenFile_Click"
+                                Focusable="False"
+                                VerticalAlignment="Center"/>
+                        <!-- Left side: file info -->
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock x:Name="FileTypeLabel"
                                        Foreground="#8E8E93"
