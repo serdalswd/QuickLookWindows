@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Look for Windows — Anlık Dosya Önizleme</title>
+    <meta name="description" content="Mac'in efsanevi Quick Look özelliği artık Windows'ta. Herhangi bir dosyaya Space tuşuna basarak saniyeler içinde önizleyin.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <div class="nav-logo">
+                <span class="logo-icon">⌚</span>
+                <span class="logo-text">QuickLook</span>
+                <span class="logo-badge">for Windows</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Özellikler</a>
+                <a href="#how">Nasıl Çalışır</a>
+                <a href="#download" class="btn-nav">İndir</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-glow"></div>
+        <div class="container">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Mac'ten ilham alındı · Windows'a taşındı
+            </div>
+            <h1 class="hero-title">
+                Dosyaları <span class="gradient-text">Anında</span><br>Önizle
+            </h1>
+            <p class="hero-sub">
+                File Explorer'da herhangi bir dosyayı seçin ve <kbd>SPACE</kbd> tuşuna basın.<br>
+                Uygulamayı açmadan — sadece önizleyin.
+            </p>
+            <div class="hero-actions">
+                <!-- GitHub Releases URL'ini buraya girin -->
+                <a href="https://github.com/serdalswd/QuickLookWindows/releases/latest/download/QuickLookWindows.exe"
+                   class="btn-primary" id="download-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Ücretsiz İndir
+                </a>
+                <a href="https://github.com/serdalswd/QuickLookWindows" class="btn-secondary" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                    GitHub'da Gör
+                </a>
+            </div>
+            <div class="hero-meta">
+                <span>✓ Tamamen ücretsiz</span>
+                <span>✓ Açık kaynak</span>
+                <span>✓ Windows 10 / 11</span>
+            </div>
+        </div>
+
+        <!-- Mockup -->
+        <div class="mockup-wrap container">
+            <div class="mockup-window">
+                <div class="mockup-titlebar">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="mockup-filename">proje_sunum.png</span>
+                </div>
+                <div class="mockup-content">
+                    <div class="mockup-image-placeholder">
+                        <div class="placeholder-graphic">
+                            <div class="pg-rect large"></div>
+                            <div class="pg-line"></div>
+                            <div class="pg-line short"></div>
+                            <div class="pg-rect small"></div>
+                        </div>
+                        <p>Görüntü Önizlemesi</p>
+                    </div>
+                </div>
+                <div class="mockup-footer">
+                    <span>PNG Görüntü</span>
+                    <span>·</span>
+                    <span>2.4 MB</span>
+                    <span class="mockup-hint">ESC / SPACE — kapat</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-label">Desteklenen Formatlar</div>
+            <h2 class="section-title">Her dosya türü için <span class="gradient-text">hazır</span></h2>
+            <p class="section-sub">Resimden koda, videodan sese — her şey anlık önizleme destekli.</p>
+
+            <div class="formats-grid">
+                <div class="format-card">
+                    <div class="format-icon img-icon">🖼️</div>
+                    <div class="format-name">Görüntüler</div>
+                    <div class="format-exts">JPG · PNG · GIF · BMP · WEBP · ICO</div>
+                </div>
+                <div class="format-card">
+                    <div class="format-icon code-icon">📝</div>
+                    <div class="format-name">Kod & Metin</div>
+                    <div class="format-exts">TXT · MD · CS · JS · PY · JSON · XML · HTML</div>
+                </div>
+                <div class="format-card">
+                    <div class="format-icon vid-icon">🎬</div>
+                    <div class="format-name">Video</div>
+                    <div class="format-exts">MP4 · AVI · MKV · MOV · WMV · WEBM</div>
+                </div>
+                <div class="format-card">
+                    <div class="format-icon aud-icon">🎵</div>
+                    <div class="format-name">Ses</div>
+                    <div class="format-exts">MP3 · WAV · FLAC · AAC · OGG · M4A</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how" id="how">
+        <div class="container">
+            <div class="section-label">Kullanım</div>
+            <h2 class="section-title">3 adımda <span class="gradient-text">başla</span></h2>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">01</div>
+                    <div class="step-icon">⬇️</div>
+                    <h3>İndir & Başlat</h3>
+                    <p>EXE dosyasını indirin ve çalıştırın. Sistem tepsisinde görünür, arka planda çalışır.</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-num">02</div>
+                    <div class="step-icon">📁</div>
+                    <h3>Dosya Seç</h3>
+                    <p>File Explorer'ı açın, önizlemek istediğiniz dosyaya bir kez tıklayın.</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-num">03</div>
+                    <div class="step-icon">⌨️</div>
+                    <h3>Space'e Bas</h3>
+                    <p>Klavyedeki <kbd>SPACE</kbd> tuşuna basın. Anında önizleme açılır. <kbd>ESC</kbd> ile kapatın.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Requirements -->
+    <section class="requirements">
+        <div class="container">
+            <div class="req-card">
+                <h3>Sistem Gereksinimleri</h3>
+                <div class="req-list">
+                    <div class="req-item">
+                        <span class="req-check">✓</span>
+                        <span>Windows 10 veya Windows 11</span>
+                    </div>
+                    <div class="req-item">
+                        <span class="req-check">✓</span>
+                        <span>.NET 8 Runtime (ücretsiz, Microsoft'tan)</span>
+                    </div>
+                    <div class="req-item">
+                        <span class="req-check">✓</span>
+                        <span>64-bit işletim sistemi</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download CTA -->
+    <section class="download-cta" id="download">
+        <div class="container">
+            <div class="cta-glow"></div>
+            <h2>Hemen deneyin</h2>
+            <p>Kurulum yok. Kayıt yok. Tamamen ücretsiz.</p>
+            <a href="https://github.com/serdalswd/QuickLookWindows/releases/latest/download/QuickLookWindows.exe"
+               class="btn-primary large">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                QuickLookWindows.exe İndir
+            </a>
+            <div class="cta-note">Son sürüm · Windows 10/11 · .NET 8 gerektirir</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-logo">
+                <span class="logo-icon">⌚</span>
+                <span>QuickLook for Windows</span>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/serdalswd/QuickLookWindows" target="_blank">GitHub</a>
+                <a href="https://github.com/serdalswd/QuickLookWindows/issues" target="_blank">Hata Bildir</a>
+                <a href="https://github.com/serdalswd/QuickLookWindows/releases" target="_blank">Sürümler</a>
+            </div>
+            <div class="footer-copy">Mac'in Quick Look'undan ilham alındı. MIT Lisansı.</div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
