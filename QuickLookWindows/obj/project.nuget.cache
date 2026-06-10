@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "9nT7xUzc9Gs=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\serdal\\Desktop\\PROJE 2\\QuickLookWindows\\QuickLookWindows.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\serdal\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.0\\microsoft.net.illink.tasks.9.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
