@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace QuickLookWindows;
@@ -14,18 +13,17 @@ public class KeyboardHook : IDisposable
     private readonly LowLevelKeyboardProc _proc;
 
     public event Action<IntPtr>? SpaceInExplorer;
+    public bool IsInstalled => _hookId != IntPtr.Zero;
 
     public KeyboardHook()
     {
         _proc = HookCallback;
-        _hookId = SetHook(_proc);
-    }
-
-    private static IntPtr SetHook(LowLevelKeyboardProc proc)
-    {
-        using var process = Process.GetCurrentProcess();
-        using var module = process.MainModule!;
-        return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(module.ModuleName!), 0);
+        // WH_KEYBOARD_LL is system-wide and does not require DLL injection.
+        // IntPtr.Zero is the correct hMod per MSDN — using GetModuleHandle
+        // breaks for single-file published EXEs because the module name is a
+        // temp-extracted path that the kernel doesn't recognise.
+        _hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, IntPtr.Zero, 0);
+        Logger.Log($"KeyboardHook install: {(_hookId != IntPtr.Zero ? "OK" : $"FAILED (error {Marshal.GetLastWin32Error()})")}");
     }
 
     private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
@@ -36,9 +34,11 @@ public class KeyboardHook : IDisposable
             if (vkCode == VK_SPACE)
             {
                 IntPtr hwnd = GetForegroundWindow();
-                if (FileExplorerHelper.IsFileExplorerWindow(hwnd))
+                bool isExplorer = FileExplorerHelper.IsFileExplorerWindow(hwnd);
+                Logger.Log($"SPACE pressed — hwnd=0x{hwnd:X} explorer={isExplorer}");
+                if (isExplorer)
                 {
-                    SpaceInExplorer?.Invoke(hwnd); // HWND'yi hemen yakala, sonra ilet
+                    SpaceInExplorer?.Invoke(hwnd);
                     return (IntPtr)1;
                 }
             }
@@ -68,7 +68,4 @@ public class KeyboardHook : IDisposable
 
     [DllImport("user32.dll")]
     private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-    private static extern IntPtr GetModuleHandle(string lpModuleName);
 }

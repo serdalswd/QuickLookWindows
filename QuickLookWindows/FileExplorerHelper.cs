@@ -20,39 +20,46 @@ public static class FileExplorerHelper
         return cls == "CabinetWClass" || cls == "ExploreWClass";
     }
 
-    // explorerHwnd: hook callback'te yakalanan HWND (değişmeden geçirilir)
     public static string? GetSelectedFile(IntPtr explorerHwnd)
     {
         try
         {
             var shellAppType = Type.GetTypeFromProgID("Shell.Application");
-            if (shellAppType == null) return null;
+            if (shellAppType == null)
+            {
+                Logger.Log("GetSelectedFile: Shell.Application ProgID not found");
+                return null;
+            }
 
             dynamic shell = Activator.CreateInstance(shellAppType)!;
             dynamic windows = shell.Windows();
             long targetHwnd = explorerHwnd.ToInt64();
+            Logger.Log($"GetSelectedFile: scanning {windows.Count} shell windows for hwnd=0x{targetHwnd:X}");
 
             for (int i = 0; i < windows.Count; i++)
             {
                 try
                 {
                     dynamic window = windows.Item(i);
-                    long windowHwnd = Convert.ToInt64(window.HWND); // 64-bit safe
+                    long windowHwnd = Convert.ToInt64(window.HWND);
                     if (windowHwnd == targetHwnd)
                     {
                         dynamic document = window.Document;
                         dynamic selectedItems = document.SelectedItems();
+                        Logger.Log($"GetSelectedFile: matched window, selected count={selectedItems.Count}");
                         if (selectedItems.Count > 0)
                         {
                             dynamic item = selectedItems.Item(0);
                             return item.Path as string;
                         }
+                        return null;
                     }
                 }
-                catch { }
+                catch (Exception ex) { Logger.Log($"GetSelectedFile: window[{i}] error: {ex.Message}"); }
             }
+            Logger.Log("GetSelectedFile: no matching window found");
         }
-        catch { }
+        catch (Exception ex) { Logger.Log($"GetSelectedFile: outer error: {ex.Message}"); }
         return null;
     }
 }

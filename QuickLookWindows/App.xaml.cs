@@ -16,6 +16,14 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        Logger.Log("=== QuickLookWindows starting ===");
+
+        DispatcherUnhandledException += (_, ex) =>
+        {
+            Logger.Log($"UNHANDLED: {ex.Exception}");
+            ex.Handled = true;
+        };
+
         SetupTrayIcon();
         SetupKeyboardHook();
         new ToastWindow().Show();
@@ -32,6 +40,7 @@ public partial class App : Application
 
         var menu = new ContextMenuStrip();
         menu.Items.Add("Hakkında", null, (_, _) => ShowAbout());
+        menu.Items.Add("Log Dosyasını Aç", null, (_, _) => OpenLog());
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add("Çıkış", null, (_, _) => Shutdown());
         _trayIcon.ContextMenuStrip = menu;
@@ -44,22 +53,31 @@ public partial class App : Application
     private void SetupKeyboardHook()
     {
         _hook = new KeyboardHook();
-        // BeginInvoke: hook callback'ten UI thread'e güvenli geçiş
         _hook.SpaceInExplorer += hwnd => Dispatcher.BeginInvoke(() => OnSpaceInExplorer(hwnd));
+
+        if (!_hook.IsInstalled)
+        {
+            Logger.Log("Hook could not be installed — showing error balloon");
+            _trayIcon!.BalloonTipTitle = "Quick Look — Hata";
+            _trayIcon.BalloonTipText = "Klavye kancası kurulamadı. Yönetici olarak çalıştırmayı deneyin.";
+            _trayIcon.BalloonTipIcon = ToolTipIcon.Error;
+            _trayIcon.ShowBalloonTip(5000);
+        }
     }
 
     private void OnSpaceInExplorer(IntPtr explorerHwnd)
     {
         if (_previewWindow != null)
         {
+            Logger.Log("SPACE — closing existing preview");
             _previewWindow.Close();
             _previewWindow = null;
             return;
         }
 
         string? filePath = FileExplorerHelper.GetSelectedFile(explorerHwnd);
+        Logger.Log($"SPACE — selected file: {filePath ?? "(null)"}");
         if (filePath == null) return;
-        // Hem dosya hem klasör desteklenir
         if (!File.Exists(filePath) && !Directory.Exists(filePath)) return;
 
         _previewWindow = new PreviewWindow(filePath);
@@ -76,8 +94,15 @@ public partial class App : Application
             MessageBoxImage.Information);
     }
 
+    private void OpenLog()
+    {
+        try { System.Diagnostics.Process.Start("notepad.exe", Logger.LogPath); }
+        catch { }
+    }
+
     protected override void OnExit(ExitEventArgs e)
     {
+        Logger.Log("=== QuickLookWindows exiting ===");
         _hook?.Dispose();
         _trayIcon?.Dispose();
         base.OnExit(e);
